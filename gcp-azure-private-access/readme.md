@@ -28,11 +28,11 @@ Azure Private Endpoint Connection ->> Azure Sql database: query
 
 -   Go to Azure Portal, Azure SQL Server, Firewall and Virtual Networks. Associate newly created Azure SQL Database Server with the subnet we created above
 
-<img src="./doc/img/azure-vnet-associate-subnet-with-sql-server.png style="width:50%;height:50%""/>
+<img src="./doc/img/azure-vnet-associate-subnet-with-sql-server.png" style="width:50%;height:50%"/>
 
 -   Go to Azure Portal, Azure SQL Server, Private endpoint connections. Approve the automatically created connection if not already.
 
-<img src="./doc/img/azure-vnet-private-connection-with-sql.png style="width:50%;height:50%""/>
+<img src="./doc/img/azure-vnet-private-connection-with-sql.png" style="width:50%;height:50%"/>
 
 -   The Private IP address of the SQL Server should be the first available private IP address in that subnet, for example, if the subnet has CIDR of 172.16.0.0/24, first available IP is 172.16.0.4.
 
