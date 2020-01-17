@@ -4,6 +4,11 @@
 
 -   pip:https://www.tecmint.com/install-pip-in-linux/
 
+-   Sample:https://medium.com/@handerson.contreras/coding-a-pipeline-for-batch-processing-with-google-dataflow-and-apache-beam-e3726ef96998
+
+-   Running custom pipelin
+https://beam.apache.org/documentation/sdks/python-streaming/
+
 ```bash
 sudo apt-get install unixodbc-dev
 sudo apt-get install pyodbc
