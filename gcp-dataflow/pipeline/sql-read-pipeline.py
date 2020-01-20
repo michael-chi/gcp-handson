@@ -1,6 +1,5 @@
-"""`data_ingestion.py` is a Dataflow pipeline which reads a file and writes its
-contents to a BigQuery table.
-This example does not do any transformation on the data.
+"""
+https://towardsdatascience.com/lets-build-a-streaming-data-pipeline-e873d671fc57
 """
 from __future__ import absolute_import
 import argparse
@@ -10,6 +9,18 @@ import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 import pyodbc
 from apache_beam.io.gcp import gcsio
+from bson import json_util
+import json
+
+class WriteToSeparateFiles(beam.DoFn):
+    def __init__(self, outdir):
+        self.outdir = outdir
+    def process(self, element):
+        writer = filesystems.FileSystems.create(self.outdir + element + '.json')
+        # writer.write(element)
+        writer.write(json.dumps(results, default=json_util.default))
+        writer.close()
+
 
 class DataIngestion:
     def read_data(self, connect_string, tsql):
@@ -22,15 +33,20 @@ class DataIngestion:
         columns = [column[0] for column in table.description]
         # tables = cursor.fetchall()
         results = []
-        for row in table.fetchall()::
-            results.append(dict(zip(columns, row)))
+        for row in table.fetchall():
+            results.append(row)
+            # results.append(dict(zip(json.dumps(results, default=json_util.default))))
         return results
-        
+
+class ConvertToString(beam.DoFn):
+    def process(self, element):
+        yield {'id':1}
+        # return json.dumps(results, default=json_util.default)
+
 def run(argv=None):
     """The main function which creates the pipeline and runs it."""
 
     parser = argparse.ArgumentParser()
-
     
     parser.add_argument(
         '--connectionString',
@@ -43,7 +59,6 @@ def run(argv=None):
             dest='tsql',
             required=True,
             help='Specify TSQL statment of the query.')
-
     
     parser.add_argument('--output-bucket',
                         dest='output_bucket',
@@ -52,7 +67,7 @@ def run(argv=None):
 
     # Parse arguments from the command line.
     known_args, pipeline_args = parser.parse_known_args(argv)
-
+    print (known_args.output_bucket)
     # DataIngestion is a class we built in this script to hold the logic for
     # transforming the file into a BigQuery table.
     data_ingestion = DataIngestion()
@@ -68,17 +83,15 @@ def run(argv=None):
      # argument from the command line. We also skip the first line which is a
      # header row.
      | 'Read from SQL' >> data_ingestion.read_data(known_args.connection_string, known_args.tsql)
-
      # This stage of the pipeline translates from a CSV file single row
      # input as a string, to a dictionary object consumable by BigQuery.
      # It refers to a function we have written. This function will
      # be run in parallel on different workers using input from the
      # previous stage of the pipeline.
-     | 'Write to Storage Bucket' >> WriteToText(known_args.output_bucket + '/test.json') 
-       
-    
-    p.run().wait_until_finish()
-
+     | 'Conver to String' >> beam.ParDo(ConvertToString())
+     #| 'Write to Storage Bucket' >> beam.io.WriteToText(known_args.output_bucket, file_name_suffix='.json',append_trailing_newlines=True,shard_name_template=''))
+     | 'Write to Storage Bucket' >> beam.ParDo(WriteToSeparateFiles(known_args.output_bucket)))
+    p.run() #.wait_until_finish()
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)

@@ -40,7 +40,7 @@ setup(name='dataflow_python_examples',
         version='1.0',
         description='Python Dataflow Examples',
         author='Michael Chi',
-        install_requires=["pyodbc"],
+        install_requires=["pyodbc", "google-cloud", "apitools","six","google-apitools"],
         packages=setuptools.find_packages(),
         cmdclass={
             # Command class instantiated and run during pip install scenarios.

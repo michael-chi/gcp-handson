@@ -25,6 +25,13 @@ sudo ln -sfn /opt/mssql-tools/bin/sqlcmd-13.0.1.0 /usr/bin/sqlcmd
 sudo ln -sfn /opt/mssql-tools/bin/bcp-13.0.1.0 /usr/bin/bcp
 
 
-
-pip install pyodbc
+sudo apt-get install python3-pip
+pip3 install --user pyodbc
+pip3 install --user google-cloud
+pip3 install --user apitools
+pip3 install --user google-apitools
+pip3 install --user six==1.10
+pip3 install --user google-cloud-storage
+apt-get install google-cloud-sdk
+pip3 install --upgrade google-cloud-storage
 ```
