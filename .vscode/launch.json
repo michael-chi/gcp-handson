@@ -15,7 +15,11 @@
             "cwd": "${workspaceFolder}/gcp-azure-private-access/src/sqlclient",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_ApiConfiguration_CloudVisionAPIKey" : "test"
+            }
         },
         {
             "name": ".NET Core Attach",
