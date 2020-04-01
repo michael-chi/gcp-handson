@@ -4,4 +4,4 @@ metadata:
   name: app2-config
   namespace: default
 data:
-  remote: 34.107.192.252
+  remote: <REMOTE IP>
