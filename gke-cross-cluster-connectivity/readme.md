@@ -95,8 +95,14 @@ kubectl apply -f ./app2/configMap.yaml
 kubectl apply -f ./app2/service.yaml
 ```
 
+This approach requires that both cluster in same region, GKE has a BETA [Global Access](https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balancing#global_access_beta) feature that allows internal load balancer to be accessed from different region
 
 #### Ingress for Internal HTTPS Load Balancer
 
 This is still in BETA, reference to below document for details, we do not encourage to use BETA features on your production environment
 -   https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#deploying_ingress_for
+
+
+#### Istio
+
+https://cloud.google.com/solutions/building-a-multi-cluster-service-mesh-on-gke-using-replicated-control-plane-architecture
