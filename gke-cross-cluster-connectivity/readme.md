@@ -3,7 +3,7 @@ Overview
 
 We will be deploying two services: app1 and app2, both services exposed to the internet via Ingress, which in turns, a Global HTTP Load Balancer on GCP.
 
-With this setup, app2 can talek to app2 via GKE network.
+With this setup, app2 can talk to app1 via GKE network.
 
 Then, we will have two GKE clusters created, and deploy app1 and app2 to different clsuters, then we will create an internal load balancer for app1 and the other internal load balancer for app2 so that they can communicate with each other via interal load balancer when required.
 
