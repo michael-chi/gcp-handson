@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: istio-app2
+    service: istio-app2
+  name: istio-app2
+  annotations:
+    # Use Network Endpoint Group so traffic directly laod balanced to pods
+    # cloud.google.com/neg: '{"ingress": true}'
+    # beta.cloud.google.com/backend-config: '{"ports": {"9999":"mud-backendconfig"}}'
+spec:
+  selector:
+    app: istio-app2
+  ports:
+  - protocol: TCP
+    port: 9999
+    name: istio-app2-port
+    targetPort: 9999
+  # type: NodePort
