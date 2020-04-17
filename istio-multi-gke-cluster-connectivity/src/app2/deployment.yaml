@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
             -   name: app2
-                image: gcr.io/kalschi-istio/demo-app2:istio-v1
+                image: gcr.io/kalschi-istio/demo-app2:istio-v2
                 imagePullPolicy: Always
                 ports:
                     -   name: ws

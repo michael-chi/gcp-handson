@@ -10,8 +10,8 @@ expressApp.get('/app2', async (req, res) => {
         //var resp = await request('http://app1.default.svc.cluster.local:8888/app1');
         var remote = process.env.REMOTE_HOST
         var resp = await request(remote)
-        console.log(`retrieved from app1:${resp.json()}`);
-        res.send(JSON.stringify({message:resp.json(),from:'app2-istio'}));
+        console.log(`retrieved from app1:${resp}`);
+        res.send(JSON.stringify({message:resp,from:'app2-istio'}));
         // request('http://app1.default.svc.cluster.local:8888/app1', { json: true }, (err, res, body) => {
         //     if (err) { return console.log(err); }
         //     res.send(JSON.stringify({message:body,from:'app2'}));
