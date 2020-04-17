@@ -1,0 +1,16 @@
+{
+  "name": "app2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "compat": "^1.0.4",
+    "express": "^4.17.1",
+    "request": "^2.88.2"
+  }
+}

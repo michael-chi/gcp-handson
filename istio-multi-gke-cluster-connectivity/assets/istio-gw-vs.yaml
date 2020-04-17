@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-app2-mc-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80    # internet facing port
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+  # - port:
+  #     number: 443    # internet facing port
+  #     name: https
+  #     protocol: HTTPS
+  #   hosts:
+  #   - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istio-app2-istio-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - istio-app2-mc-gateway
+  http:
+  - match:
+    - uri:
+        exact: /app2
+    route:
+    - destination:
+        host: app2  # Match to App2's service.yaml
+        port:
+          number: 9999

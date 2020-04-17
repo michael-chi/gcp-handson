@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: app2
+spec:
+    selector:
+        matchLabels:
+            app: app2
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: app2
+        spec:
+            containers:
+            -   name: app2
+                image: gcr.io/kalschi-istio/demo-app2:istio-v1
+                imagePullPolicy: Always
+                ports:
+                    -   name: ws
+                        containerPort: 9999
+                livenessProbe:
+                    tcpSocket:
+                        port: 9999
+                    initialDelaySeconds: 30
+                readinessProbe:
+                    tcpSocket:
+                        port: 9999
+                    initialDelaySeconds: 30
+                resources:
+                    requests:
+                        cpu: 20m
+                        memory: 1G
+                env:
+                    - name: REMOTE_HOST
+                      valueFrom:
+                        configMapKeyRef:
+                            name: app2-config
+                            key: remote
+                

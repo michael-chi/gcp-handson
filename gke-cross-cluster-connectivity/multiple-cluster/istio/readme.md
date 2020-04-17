@@ -9,9 +9,15 @@ This step requires App1 and App2 deployed to different GKE clusters
 
 [Istio Get Started](https://istio.io/docs/setup/getting-started/#bookinfo)
 
+[Istio Multi-Cluster deployment model](https://istio.io/docs/ops/deployment/deployment-models/#multiple-clusters)
+
+[Build Multi-Cluster Service Mesh across GKE clusters using Istio Single Control Panel](https://cloud.google.com/solutions/building-multi-cluster-service-mesh-across-gke-clusters-using-istio-single-control-plane-architecture-single-vpc#whats-next)
+
+[Building a multi-cluster service mesh on GKE using replicated control-plane architecture](https://cloud.google.com/solutions/building-a-multi-cluster-service-mesh-on-gke-using-replicated-control-plane-architecture)
+
 ## Prepare your GKE cluster
 
-Enable Istio (BETA) if not already on your GKE cluster
+[Enable Istio (BETA) if not already on your GKE cluster](https://cloud.google.com/solutions/building-a-multi-cluster-service-mesh-on-gke-using-replicated-control-plane-architecture#before-you-begin)
 
 Setup App1 and App2 with Istio
 ==============================

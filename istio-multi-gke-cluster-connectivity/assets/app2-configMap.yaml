@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app2-config
+  namespace: default
+data:
+  remote: http://app1.default.global/app1

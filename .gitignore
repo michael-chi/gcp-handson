@@ -6,3 +6,8 @@
 **/dummy/
 **/appsettings.Development.json
 **/node_modules/*
+**/istio-kubeconfig
+**/*.tar.gz
+**/dummy.yaml
+**/temp.yaml
+**/temp/

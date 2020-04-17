@@ -1,0 +1,30 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: app2-istio-mc
+  annotations:
+    # Use Network Endpoint Group so traffic directly laod balanced to pods
+    # cloud.google.com/neg: '{"ingress": true}'
+    # beta.cloud.google.com/backend-config: '{"ports": {"9999":"mud-backendconfig"}}'
+spec:
+  selector:
+    app: app2-istio-mc
+  ports:
+  - protocol: TCP
+    port: 80
+    name: app2-istio-mc-port
+    targetPort: 9999
+  type: ClusterIP
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: app2-istio-mc-external
+  spec:
+    type: LoadBalancer
+    selector:
+      app: app2-istio-mc
+    ports:
+    - name: http
+      port: 80
+      targetPort: 9999
