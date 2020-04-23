@@ -59,3 +59,5 @@ References
 [Istio - Multi Clusters](https://istio.io/docs/setup/install/multicluster/gateways/)
 
 [Istio - Get Started](https://istio.io/docs/setup/getting-started/#bookinfo)
+
+[Istio - Mixerless Staxkdriver Log](https://github.com/istio/istio/wiki/Mixerless-Stackdriver-HTTP-Telemetry)
