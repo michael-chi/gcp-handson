@@ -10,7 +10,7 @@
 mkdir temp
 cd temp
 
-export ISTIO_VERSION=1.3.3
+export ISTIO_VERSION=1.5.2
 wget https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-linux.tar.gz
 tar -xzf istio-${ISTIO_VERSION}-linux.tar.gz
 rm -r istio-${ISTIO_VERSION}-linux.tar.gz
@@ -65,10 +65,10 @@ Istio預設會使用Citadel自建的Self-signed root certificate來簽署workloa
 for cluster in $(kubectx)
 do
   kubectl --context $cluster create secret generic cacerts -n istio-system \
-    --from-file=./assets/ca-cert.pem \
-    --from-file=./assets/ca-key.pem \
-    --from-file=./assets/root-cert.pem \
-    --from-file=./assets/cert-chain.pem;
+    --from-file=../assets/ca-cert.pem \
+    --from-file=../assets/ca-key.pem \
+    --from-file=../assets/root-cert.pem \
+    --from-file=../assets/cert-chain.pem;
   done
 ```
 ## Install Istio CRDs
@@ -92,6 +92,7 @@ done
 for cluster in $(kubectx)
 do
   kubectx $cluster;
+  ${HELM_PATH}/helm del --purge istio
   ${HELM_PATH}/helm install ./temp/istio-${ISTIO_VERSION}/install/kubernetes/helm/istio --name istio --namespace istio-system \
 --values https://raw.githubusercontent.com/GoogleCloudPlatform/istio-multicluster-gke/master/istio-multi-controlplane/istio/values-istio-multicluster-gateways.yaml;
 done
@@ -101,9 +102,12 @@ done
 >So instead use below if want to use local version
 
 ```shell
+for cluster in $(kubectx)
+do
   kubectx $cluster;
   ${HELM_PATH}/helm install ./temp/istio-${ISTIO_VERSION}/install/kubernetes/helm/istio --name istio --namespace istio-system \
---values ./02-install-istio/values-istio-multicluster-gateways.yaml;
+--values ./assets/values-istio-multicluster-gateways.yaml;
+done
 ```
 
 -   執行以下命令確定是否正確安裝
@@ -171,6 +175,15 @@ metadata:
 data:
   stubDomains: |
     {"global": ["$(kubectl get svc -n istio-system istiocoredns -o jsonpath={.spec.clusterIP})"]}
+```
+
+- 執行以下指令
+```shell
+for cluster in $(kubectx)
+do
+  kubectx $cluster;
+  kubectl apply -f ./assets/stub-domain-ConfigMap.yaml
+done
 ```
 - 現在我們已經完成了所有準備了, 接著, 我們要在APP2 Cluster上建立一個ServiceEntry, [指定App1的位置]
 
