@@ -69,7 +69,7 @@ do
     --from-file=../assets/ca-key.pem \
     --from-file=../assets/root-cert.pem \
     --from-file=../assets/cert-chain.pem;
-  done
+done
 ```
 ## Install Istio CRDs
 

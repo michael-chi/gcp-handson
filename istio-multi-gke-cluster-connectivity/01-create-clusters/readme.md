@@ -23,7 +23,7 @@ export KUBECONFIG=istio-kubeconfig
 
 #   Create GKE Clusters
 gcloud container clusters create $APP1_CLUSTER --region asia-east1 --username "admin" \
-    --machine-type "n1-standard-2" --image-type "COS" \
+    --machine-type "e2-standard-8" --image-type "COS" \
     --disk-size "100" --cluster-version=1.14 \
     --scopes "https://www.googleapis.com/auth/compute",\
 "https://www.googleapis.com/auth/devstorage.read_only",\
@@ -36,7 +36,7 @@ gcloud container clusters create $APP1_CLUSTER --region asia-east1 --username "a
     --enable-ip-alias --enable-master-authorized-networks --enable-private-nodes --master-ipv4-cidr "172.16.0.32/28"  --enable-stackdriver-kubernetes 
 
 gcloud container clusters create $APP2_CLUSTER --region asia-northeast1 --username "admin" \
-    --machine-type "n1-standard-2" --image-type "COS" \
+    --machine-type "e2-standard-8" --image-type "COS" \
     --disk-size "100" --cluster-version=1.14 \
     --scopes "https://www.googleapis.com/auth/compute",\
 "https://www.googleapis.com/auth/devstorage.read_only",\
