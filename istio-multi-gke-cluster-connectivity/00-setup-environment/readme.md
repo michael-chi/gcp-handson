@@ -2,6 +2,8 @@ Setup Dev Machine
 =================
 ```bash
 export SRCDIR=$(pwd)
+mkdir temp
+cd temp
 cd $HOME
 git clone https://github.com/GoogleCloudPlatform/istio-multicluster-gke.git
 cd $HOME/istio-multicluster-gke

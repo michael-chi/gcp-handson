@@ -7,7 +7,7 @@
 export APP1_CLUSTER=gke1
 export APP2_CLUSTER=gke2
 export APP1_REGION=asia-east1
-export APP2_REGION=asia-northeast1
+export APP2_REGION=us-central1
 ```
 
 ## Setup VPCs for App1 and App2 clsuters
@@ -22,29 +22,17 @@ gcloud compute networks create app2
 export KUBECONFIG=istio-kubeconfig
 
 #   Create GKE Clusters
-gcloud container clusters create $APP1_CLUSTER --region asia-east1 --username "admin" \
+gcloud container clusters create $APP1_CLUSTER --region $APP1_REGION --username "admin" \
     --machine-type "e2-standard-8" --image-type "COS" \
     --disk-size "100" --cluster-version=1.14 \
-    --scopes "https://www.googleapis.com/auth/compute",\
-"https://www.googleapis.com/auth/devstorage.read_only",\
-"https://www.googleapis.com/auth/logging.write",\
-"https://www.googleapis.com/auth/monitoring",\
-"https://www.googleapis.com/auth/servicecontrol",\
-"https://www.googleapis.com/auth/service.management.readonly",\
-"https://www.googleapis.com/auth/trace.append" \
+    --scopes "https://www.googleapis.com/auth/cloud-platform" \
     --num-nodes "1" --network "app1" --enable-cloud-logging --enable-cloud-monitoring --async \
     --enable-ip-alias --enable-master-authorized-networks --enable-private-nodes --master-ipv4-cidr "172.16.0.32/28"  --enable-stackdriver-kubernetes 
 
-gcloud container clusters create $APP2_CLUSTER --region asia-northeast1 --username "admin" \
+gcloud container clusters create $APP2_CLUSTER --region $APP2_REGION --username "admin" \
     --machine-type "e2-standard-8" --image-type "COS" \
     --disk-size "100" --cluster-version=1.14 \
-    --scopes "https://www.googleapis.com/auth/compute",\
-"https://www.googleapis.com/auth/devstorage.read_only",\
-"https://www.googleapis.com/auth/logging.write",\
-"https://www.googleapis.com/auth/monitoring",\
-"https://www.googleapis.com/auth/servicecontrol",\
-"https://www.googleapis.com/auth/service.management.readonly",\
-"https://www.googleapis.com/auth/trace.append" \
+    --scopes "https://www.googleapis.com/auth/cloud-platform" \
     --num-nodes "1" --network "app2" --enable-cloud-logging --enable-cloud-monitoring --async --enable-ip-alias \
     --enable-ip-alias --enable-master-authorized-networks --enable-private-nodes --master-ipv4-cidr "172.16.0.32/28"  --enable-stackdriver-kubernetes  
 ```
@@ -55,7 +43,6 @@ gcloud container clusters create $APP2_CLUSTER --region asia-northeast1 --userna
 export MASTER_CIDR=172.16.0.32/28
 
 gcloud compute --project=kalschi-istio firewall-rules create allow-ingress-app1-tcp-9443 --direction=INGRESS --priority=1000 --network=app1 --action=ALLOW --rules=tcp:9443 --source-ranges=$MASTER_CIDR
-
 
 gcloud compute --project=kalschi-istio firewall-rules create allow-ingress-app2-tcp-9443 --direction=INGRESS --priority=1000 --network=app2 --action=ALLOW --rules=tcp:9443 --source-ranges=$MASTER_CIDR
 ```
