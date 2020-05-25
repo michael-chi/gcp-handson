@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grpc-client-config
+  namespace: default
+data:
+  REMOTE: greet-service.greet-service-dns-name:50051
