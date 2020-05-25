@@ -11,6 +11,7 @@ Below I am comparing different options on GCP for multiple GKE clusters to commu
 |Multiple VPC(via VPC Peering)|Yes([*6])|Yes([*2](https://istio.io/docs/setup/install/multicluster/shared/#prerequisites))|No([*3](https://cloud.google.com/traffic-director/docs/traffic-director-concepts#limitations))|
 |Non-GKE resources|Yes|Yes, ExternalName, Endpoints or VirtualService([*4]((https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service)))|Yes (Install Envoy proxy)([*5]((https://cloud.google.com/traffic-director/docs/set-up-gce-vms))) |
 |Service Discovery|With GCP's Service Directory|<li>Istio built-in Service Mesh</li><li>External Names</li>|Traffic Director|
+|Query Approach|DNS query or HTTP API calls|DNS|DNS|
 |References||<li>[Istiowith multicluster installation](https://istio.io/docs/setup/install/multicluster/shared/)</li><li>[K8S internal load balacing](https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer)</li>||
 |My Comments|Natively supported<br/>Some management and operations are seperated from GKE|GKE Native<br/>Version updates frequently, customers may need to keep up with it<br/>Telemetry moved away at version 1.4 (Latest 1.6), which can have potential migration/upgrade issue|Works only in single VPC|
 
