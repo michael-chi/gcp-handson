@@ -1,0 +1,64 @@
+[Sample](https://github.com/grpc/grpc/tree/master/examples/csharp)
+
+# Internal TCP/UDP Load Balancer MUST enable Global Access (Manual)
+
+[Internal TCP/UDP LB Global Access](https://cloud.google.com/load-balancing/docs/internal-lb-and-other-networks#global_access)
+
+[VPC Peering and Internal TCP/UDP LB](https://cloud.google.com/vpc/docs/vpc-peering)
+
+# MUST Crate Firewall rule to allow ingress to gRPC server in gRPC VPC
+
+
+
+
+```shell
+export VPC=vpc-td-us
+gcloud compute firewall-rules create fw-allow-health-checks \
+    --network $VPC \
+    --action ALLOW \
+    --direction INGRESS \
+    --source-ranges 35.191.0.0/16,130.211.0.0/22 \
+    --rules tcp
+# IN iLB project
+export NEG_NAME=$(gcloud beta compute network-endpoint-groups list | grep server-grpc | awk '{print $1}')
+export BK_NAME=greet-server-td-bk-2
+export URL_MAP=td-gke-url-map-2
+export SERVICE_NAME=server-grpc-td-2 # name of the gRPC server service in app.yaml
+export HC_NAME=td-gke-health-check-tcp-2
+export NETWORK=vpc-td-us
+gcloud compute health-checks create http $HC_NAME --port 80
+
+gcloud compute backend-services create $BK_NAME \
+    --global \
+    --health-checks $HC_NAME \
+    --load-balancing-scheme INTERNAL_SELF_MANAGED
+
+gcloud compute backend-services add-backend $BK_NAME \
+    --global \
+    --network-endpoint-group ${NEG_NAME} \
+    --network-endpoint-group-zone us-central1-b \
+    --balancing-mode RATE \
+    --max-rate-per-endpoint 5  
+
+# Routing Rule
+gcloud compute url-maps create $URL_MAP \
+   --default-service $BK_NAME
+
+gcloud compute url-maps add-path-matcher $URL_MAP  \
+   --default-service $BK_NAME \
+   --path-matcher-name td-gke-path-matcher
+
+gcloud compute url-maps add-host-rule $URL_MAP \
+   --hosts $SERVICE_NAME \
+   --path-matcher-name td-gke-path-matcher
+
+gcloud compute target-http-proxies create td-gke-proxy \
+   --url-map $URL_MAP
+
+gcloud compute forwarding-rules create td-gke-forwarding-rule \
+  --global \
+  --load-balancing-scheme=INTERNAL_SELF_MANAGED \
+  --address=0.0.0.0 \
+  --target-http-proxy=td-gke-proxy \
+  --ports 80 --network $NETWORK
+```

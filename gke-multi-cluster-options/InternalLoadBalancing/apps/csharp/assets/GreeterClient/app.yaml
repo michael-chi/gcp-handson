@@ -1,0 +1,43 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: greet-client
+#   annotations:
+#     # cloud.google.com/neg: '{"exposed_ports":{"50051":{}}}'
+# spec:
+#   # ports:
+#   # - port: 50051
+#   #   name: client-grpc
+#   #   protocol: TCP
+#   #   targetPort: 50051
+#   selector:
+#     run: greet-client
+#   type: ClusterIP
+
+# ---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: greet-client
+  name: greet-client
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: greet-client
+    spec:
+      containers:
+      - image: gcr.io/kalschi-istio/grpc-client:v2
+        name: greet-client
+        env:
+          - name: remote
+            valueFrom:
+              configMapKeyRef:
+                name: grpc-client-config
+                key: REMOTE
+        # ports:
+        # - protocol: TCP
+        #   containerPort: 50051

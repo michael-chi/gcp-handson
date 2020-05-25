@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-grpc-td
+  annotations:
+    # cloud.google.com/load-balancer-type: "Internal"
+    cloud.google.com/neg: '{"exposed_ports":{"80":{}}}'
+spec:
+  ports:
+  - port: 80
+    name: server-grpc-td
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: greet-server
+  type: ClusterIP
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: server-grpc-td
+  name: server-grpc-td
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: server-grpc-td
+    spec:
+      containers:
+      - image: gcr.io/kalschi-istio/grpc-server:td001
+        name: server-grpc-td
+        ports:
+        - protocol: TCP
+          containerPort: 80
