@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: greet-server
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+    cloud.google.com/neg: '{"exposed_ports":{"50051":{}}}'
+spec:
+  ports:
+  - port: 50051
+    name: server-grpc
+    protocol: TCP
+    targetPort: 50051
+  selector:
+    run: greet-server
+  type: LoadBalancer
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: greet-server
+  name: greet-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: greet-server
+    spec:
+      containers:
+      - image: gcr.io/kalschi-istio/grpc-server:v3
+        name: greet-server
+        ports:
+        - protocol: TCP
+          containerPort: 50051

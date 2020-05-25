@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: greet-client
+  name: greet-client
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: greet-client
+    spec:
+      containers:
+      - image: gcr.io/kalschi-istio/grpc-client:v2
+        name: greet-client
+        env:
+          - name: remote
+            valueFrom:
+              configMapKeyRef:
+                name: grpc-client-config
+                key: REMOTE
