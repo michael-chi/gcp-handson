@@ -13,6 +13,12 @@ Overall speaking, we need to
 
 3. Run `GCESysprep \<Path to unattended.xmk\>`
 
+4. Shutdown Machine, keep disk and optionally delete VM
+
+5. Create an Image from VM Disk
+
+6. Create VM from Image created in Step 5
+
 A sample unattedned.xml set UI language, Input local, User Local and System local to Taiwan (`zh-TW`)
 
 ```xml
