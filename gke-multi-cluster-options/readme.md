@@ -29,4 +29,4 @@ Below I am comparing different options on GCP for multiple GKE clusters to commu
 
 *6 If your services and clients are located in different GCP regions, you must enable Internal Load Balancer's Global Access so that clients in different regions can access services via the Internal Load Balancer
 
-## [Setup Internal Load Balancing with Service Directory](./iLB.md)
+## [Setup Internal Load Balancing with Service Directory](./InternalLoadBalancing/iLB.md)
