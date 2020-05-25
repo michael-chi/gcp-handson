@@ -1,8 +1,8 @@
-## Overvuew
+## Overview
 
 Below I am comparing different options on GCP for multiple GKE clusters to communicate with each others via Internal networks. (i,e. non-public facing traffic)
 
-## Comparasion
+## Comparision
 
 ||Internal Load Balancing + Service Directory|Istio|Traffic Director|
 |:--:|:--:|:--:|:--|
