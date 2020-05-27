@@ -1,0 +1,24 @@
+#https://cloud.google.com/load-balancing/docs/https/setting-up-traffic-management#http-header-based-routing
+defaultService: https://www.googleapis.com/compute/v1/projects/kalschi-istio/global/backendServices/nginx-1
+kind: compute#urlMap
+name: test-lb-forwarding-rule-20200526
+hostRules:
+- hosts:
+  - '*'
+  pathMatcher: matcher1
+pathMatchers:
+- defaultService: https://www.googleapis.com/compute/v1/projects/kalschi-istio/global/backendServices/nginx-1
+  name: matcher1
+  routeRules:
+    - matchRules:
+        - headerMatches:
+            - headerName: Custom-Team
+              exactMatch: QA
+      priority: 2
+      service: https://www.googleapis.com/compute/v1/projects/kalschi-istio/global/backendServices/apache-2
+    - matchRules:
+      - headerMatches:
+          - headerName: Custom-Team
+            exactMatch: RD
+      priority: 3
+      service: https://www.googleapis.com/compute/v1/projects/kalschi-istio/global/backendServices/nginx-1
