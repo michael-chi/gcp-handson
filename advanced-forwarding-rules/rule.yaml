@@ -12,13 +12,13 @@ pathMatchers:
   routeRules:
     - matchRules:
         - headerMatches:
-            - headerName: Custom-Team
-              exactMatch: QA
-      priority: 2
-      service: https://www.googleapis.com/compute/v1/projects/kalschi-istio/global/backendServices/apache-2
+            - headerName: X-Forwarded-For
+              exactMatch: 111.71.41.136, 35.244.213.40
+      priority: 0
+      service: https://www.googleapis.com/compute/v1/projects/kalschi-istio/global/backendServices/nginx-2
     - matchRules:
       - headerMatches:
-          - headerName: Custom-Team
-            exactMatch: RD
-      priority: 3
+          - headerName: X-Forwarded-For
+            exactMatch: 211.71.41.136, 35.244.213.40
+      priority: 1
       service: https://www.googleapis.com/compute/v1/projects/kalschi-istio/global/backendServices/nginx-1
