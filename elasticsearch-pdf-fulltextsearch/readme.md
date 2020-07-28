@@ -44,11 +44,11 @@ Below is commands to create VM and deploy my Elasticsearch image.
 >Note that I've also added a startup script to setup max mapping count, and mount a volume to the container.
 
 ```bash
-gcloud beta compute --project=kalschi-ccai-kbtest instances create-with-container es4-1 --zone=asia-east1-b --machine-type=e2-standard-2 --subnet=default --network-tier=PREMIUM --metadata=startup-script=\#\!\ /bin/bash$'\n'sudo\ su\ -$'\n'echo\ 262144\ \>\ /proc/sys/vm/max_map_count --maintenance-policy=MIGRATE --service-account=272524098489-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --image=cos-stable-81-12871-1160-0 --image-project=cos-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=es4-1 --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --container-image=gcr.io/kalschi-project/es:001 --container-restart-policy=always --container-mount-host-path=mount-path=/usr/share/elasticsearch/data,host-path=/mnt/stateful_partition/elasticsearch,mode=rw --labels=container-vm=cos-stable-81-12871-1160-0 --reservation-affinity=any
+gcloud beta compute --project=kalschi-project instances create-with-container es4-1 --zone=asia-east1-b --machine-type=e2-standard-2 --subnet=default --network-tier=PREMIUM --metadata=startup-script=\#\!\ /bin/bash$'\n'sudo\ su\ -$'\n'echo\ 262144\ \>\ /proc/sys/vm/max_map_count --maintenance-policy=MIGRATE --service-account=272524098489-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --image=cos-stable-81-12871-1160-0 --image-project=cos-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=es4-1 --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --container-image=gcr.io/kalschi-project/es:001 --container-restart-policy=always --container-mount-host-path=mount-path=/usr/share/elasticsearch/data,host-path=/mnt/stateful_partition/elasticsearch,mode=rw --labels=container-vm=cos-stable-81-12871-1160-0 --reservation-affinity=any
 
-gcloud compute --project=kalschi-ccai-kbtest firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
+gcloud compute --project=kalschi-project firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
 
-gcloud compute --project=kalschi-ccai-kbtest firewall-rules create default-allow-https --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:443 --source-ranges=0.0.0.0/0 --target-tags=https-server
+gcloud compute --project=kalschi-project firewall-rules create default-allow-https --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:443 --source-ranges=0.0.0.0/0 --target-tags=https-server
 ```
 
 Wait for the machine created, then ssh into the host and run below commands. This is mandatory for the container instance to run.
@@ -88,7 +88,7 @@ curl -X PUT "http://10.140.0.13:9200/pdftest002" -d '{
 }'
 ```
 
-Now, to ingest PDF to Elasticsearch, oberviously I need to first convert PDF content to Elasticsearch understandable format. I do this via [node.js script](pdf-to-es-node/app.js)
+Now, to ingest PDF to Elasticsearch, obviously I need to first convert PDF content to Elasticsearch understandable format. I do this via [node.js script](pdf-to-es-node/app.js)
 
 Once converted, follow `mapper-attachments` instruction to use below REST call to ingest PDF content.
 
