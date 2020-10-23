@@ -1,0 +1,8 @@
+
+## Create Windows GKE Cluster
+
+To Migrate a Windows VM from other cloud or on-prem to GCP, you must first migrate it to GCP Compute Engine then migrate from GCP Compute Engine to GKE. [Reference](https://cloud.google.com/migrate/anthos/docs/windows/migrating-win-vm-overview)
+
+```bash
+gcloud beta container --project "kalschi-windows-env" clusters create "windows-cluster" --zone "asia-east1-b" --no-enable-basic-auth --cluster-version "1.16.13-gke.1" --release-channel "regular" --machine-type "n1-standard-2" --image-type "WINDOWS_LTSC" --disk-type "pd-standard" --disk-size "100" --metadata disable-legacy-endpoints=true --scopes "https://www.googleapis.com/auth/cloud-platform" --num-nodes "1" --enable-stackdriver-kubernetes --enable-private-nodes --master-ipv4-cidr "172.16.200.0/28" --enable-master-global-access --enable-ip-alias --network "projects/kalschi-windows-env/global/networks/default" --subnetwork "projects/kalschi-windows-env/regions/asia-east1/subnetworks/default" --default-max-pods-per-node "110" --no-enable-master-authorized-networks --addons HorizontalPodAutoscaling,HttpLoadBalancing --no-enable-autoupgrade --enable-autorepair --max-surge-upgrade 1 --max-unavailable-upgrade 0 --no-shielded-integrity-monitoring && gcloud beta container --project "kalschi-windows-env" node-pools create "linux-node-pool" --cluster "windows-cluster" --zone "asia-east1-b" --machine-type "e2-medium" --image-type "COS" --disk-type "pd-standard" --disk-size "100" --metadata disable-legacy-endpoints=true --scopes "https://www.googleapis.com/auth/cloud-platform" --num-nodes "1" --enable-autoupgrade --enable-autorepair --max-surge-upgrade 1 --max-unavailable-upgrade 0
+```
