@@ -6,7 +6,10 @@ var http = require('http');
 
 require('dotenv').config();
 
-const OUTPUT_DIR = "./outout/";
+let Indexer = require('./handlers/ingest');
+let indexer = new Indexer(process.env.ES_HOST, process.env.ES_PATH, process.env.ES_PORT);
+
+indexer.createIndex();
 
 function rawBody(req, res, next) {
     //req.setEncoding('utf8');
@@ -24,7 +27,6 @@ app.set('port', process.env.PORT || 8080);
 //app.use(rawBody);
 app.use(bodyParser.json());
 
-
 /*
     {file:``,content:{question:'', answer:'', name:'', file:''}}
 */
@@ -36,32 +38,15 @@ app.post('/upload', async (req, res) => {
         let handler = new csv();
         let parsedData = handler.parse(data);
 
-        let Indexer = require('./handlers/ingest');
-        let indexer = new Indexer(process.env.ES_HOST, process.env.ES_PATH, process.env.ES_PORT);
-
         let resp = await indexer.index(parsedData);
         res.status(200).json({message:resp});
     }
-    // else if (req.is('text/csv') || req.is('text/plain')) {
-    //     //res.status(422).json();
-    //     let dataBuffer = req.rawBody;
-    //     var lines = dataBuffer.split('\n');
-
-    //     var index = 0;
-    //     lines.forEach(line => {
-    //         var item = getCSVLineContent(line);
-    //         if (item != null) {
-    //             var fn = OUTPUT_DIR + file + (index++) + ".json";
-    //             console.log(`writting ${fn}`);
-    //             fs.writeFileSync(fn, JSON.stringify(item));
-    //         }
-    //     });
-
-    // } 
     else {
         res.status(500).json({ message: 'currently supports json only' });
     }
 });
+
+
 
 app.get('/', (req, res) => {
     try {
