@@ -39,7 +39,8 @@ app.post('/upload', async (req, res) => {
         let Indexer = require('./handlers/ingest');
         let indexer = new Indexer(process.env.ES_HOST, process.env.ES_PATH, process.env.ES_PORT);
 
-        await indexer.index(parsedData);
+        let resp = await indexer.index(parsedData);
+        res.status(200).json({message:resp.body});
     }
     // else if (req.is('text/csv') || req.is('text/plain')) {
     //     //res.status(422).json();

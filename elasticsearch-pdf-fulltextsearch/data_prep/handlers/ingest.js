@@ -16,7 +16,6 @@ const requestAsync = (options, postData = null) => new Promise((resolve, reject)
         });
         res.on('end', () => {
             res.body = Buffer.concat(body);
-            console.log(`end`);
             resolve(res);
         });
         
