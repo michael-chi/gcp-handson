@@ -18,6 +18,7 @@ const requestAsync = (options, postData = null) => new Promise((resolve, reject)
         });
         res.on('end', () => {
             res.body = Buffer.concat(body);
+		res.body = res.body.toString();
             resolve(res);
         });
 
@@ -39,10 +40,15 @@ async function search(host, path, port, term) {
         hostname: host,
         port: port,
         path: path,
-        method: 'GET'
+        method: 'POST'
     };
     try {
-        const res = await requestAsync(options);
+        const res = await requestAsync(options,JSON.stringify(
+		{
+			query: {query_string:{query:term}}
+		}
+	));
+//console.log(`========>${res.body}`);
         return res.body;
     } catch (e) {
         console.error(e);
@@ -52,12 +58,14 @@ module.exports = class Searcher {
     constructor(host, path, port) {
         this.HOST = host;
         this.PATH = path.endsWith('/') ? path : `${path}/`;
+	this.PATH = this.PATH + '_search';
         this.PORT = port;
     }
 
     //  content => {question:'', answer:'', name:'', file:''}
     async search(term) {
-        //`faq/faq/${pair.filename}`
+        //`faq/faq/_search`
         let result = await search(this.HOST, this.PATH, this.PORT, term);
+	return result;
     }
 }

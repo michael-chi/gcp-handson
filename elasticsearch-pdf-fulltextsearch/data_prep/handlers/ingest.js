@@ -18,6 +18,7 @@ const requestAsync = (options, postData = null) => new Promise((resolve, reject)
         });
         res.on('end', () => {
             res.body = Buffer.concat(body);
+		res.body = res.body.toString();
             resolve(res);
         });
 
@@ -96,8 +97,8 @@ console.log(`==>data=${JSON.stringify(data)}`);
 async function process(HOST, PATH, PORT, content) {
     console.log(`path=${PATH}${content.filename}`);
     let res = await index(HOST, `${PATH}${content.filename}`, PORT, content);
-    console.log(`process result=${res.body}`);
-    return res.body;
+    console.log(`process result=${res}`);
+    return res;
 }
 
 module.exports = class Indexer {
