@@ -49,17 +49,15 @@ async function index(host, path, port, data) {
             answer:data.answer,
             filename:data.file
         });
-        return resizeTo;
     } catch (e) {
         console.error(e);
     }
 }
 //  content => {question:'', answer:'', name:'', file:''}
 async function process(HOST, PATH, PORT, content) {
-console.log(content);
     console.log(`path=${PATH}${content.filename}`);
     let res = await index(HOST, `${PATH}${content.file}`, PORT, content);
-    return res.toString();
+    return res;
     /*
     export id=1
     export json_file=/home/tmp/1.pdf.json
@@ -70,12 +68,13 @@ console.log(content);
 module.exports = class Indexer {
     constructor(host, path, port) {
         this.HOST = host;
-        this.PATH = path;`${path}`.endsWith('/') ? `${path}` : `${path}/`;
+        this.PATH = path.endsWith('/') ? path : `${path}/`;
         this.PORT= port;
     }
 
     //  content => {question:'', answer:'', name:'', file:''}
     async index(content) {
+console.log(`this.HOST=${this.HOST} | this.PATH=${this.PATH}`);
         //`faq/faq/${pair.filename}`
         return await process(this.HOST, this.PATH, this.PORT, content);
     }

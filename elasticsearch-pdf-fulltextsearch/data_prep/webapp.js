@@ -37,7 +37,7 @@ app.post('/upload', async (req, res) => {
         let parsedData = handler.parse(data);
 
         let Indexer = require('./handlers/ingest');
-        let indexer = new Indexer();
+        let indexer = new Indexer(process.env.ES_HOST, process.env.ES_PATH, process.env.ES_PORT);
 
         await indexer.index(parsedData);
     }
