@@ -66,17 +66,20 @@ curl -XGET http://localhost:9200
 
 ## Define Index
 
-PDF contents will be indexed as other documents, so we need to first create our index for PDF files first. In this case, I will be creating an Index ccalled `fad`, and my contents will have two properties, `name` for document name and `document` for PDF content.
+PDF contents will be indexed as other documents, so we need to first create our index for PDF files first. In this case, I will be creating an Index ccalled `fad`, and my contents will have two properties, `name` for document name, `question` for questions and `answer` for PDF content.
 
 Use below command to create index, where `10.140.0.13` is my Elasticsearch's private IP address
 
 ```bash
-curl -X PUT "http://10.140.0.13:9200/pdftest002" -d '{
+curl -X PUT "http://localhost:9200/faq" -d '{
   "mappings":{
      "faq":{
         "properties":{
-           "document":{
-              "type":"attachment"
+           "answer":{
+              "type":"string"
+           },
+           "question":{
+              "type":"string"
            },
            "name":{
               "type":"string"
@@ -90,14 +93,18 @@ curl -X PUT "http://10.140.0.13:9200/pdftest002" -d '{
 
 I am using [`mapper-attachment`](https://github.com/elastic/elasticsearch-mapper-attachments) for PDF ingestion.Once ingested
 
-Now, to ingest PDF to Elasticsearch, obviously I need to first convert PDF content to Elasticsearch understandable format. I do this via [node.js script](data_prep/app.js)
+Now, to ingest PDF to Elasticsearch, obviously I need to first convert PDF content to Elasticsearch understandable format. I do this via [node.js script](data_prep/app-faq.js)
 
 Once converted, follow `mapper-attachments` instruction to use below REST call to ingest PDF content.
 
 ```bash
 export id=1
 export json_file=/home/tmp/1.pdf.json
-curl -X POST 'http://10.140.0.13:9200/pdftest002/faq/${id}' --header 'Content-Type: application/json' -d @'${json_file}'
+curl -X POST 'http://10.140.0.13:9200/faq/faq/${id}' --header 'Context-Type: application/json' -d @'${json_file}'
+```
+
+```
+curl -X POST 'http://localhost:8080/upload' --header 'Content-Type: application/json' -d @${json_file}
 ```
 
 ## Query indexted PDF
@@ -113,7 +120,7 @@ Create a json file which contains our query
 
 Run below REST call to query indexted PDF content
 ```bash
-curl -X POST 'http://10.140.0.13:9200/pdftest002/faq/_search' \
+curl -X POST 'http://10.140.0.13:9200/faq/faq/_search' \
 --header 'Context-Type: application/json' \
 -d @'query.json'
 ```

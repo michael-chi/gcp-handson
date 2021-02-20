@@ -1,0 +1,9 @@
+Outlook 如何設定通訊錄群組,請用Chrome 開啟 FAQ：[如何設定通訊錄群組](https://otcpwaf.tsmc.com.tw/group/it-video-management-platform/play?p_p_auth=bBDGJC6p&p_p_id=20&p_p_lifecycle=0&p_p_col_id=_118_INSTANCE_jWc2hzJLYLF0__column-2&p_p_col_count=3&_20_struts_action=%2Fdocument_library%2Fview_file_entry&fileEntryId=30180715) 。
+Teams IM 訊息能否貼上圖片或是 Screenshot?,IM 訊息可以直接貼上圖片或是 Screenshot 。
+Teams 訊息編輯自己/他人是否可以看到歷史紀錄?,前端不會顯示編輯紀錄，僅在後端 Server 有紀錄供稽核人員查詢。
+Teams 訊息的歷史紀錄如何查詢?,可以直接在 ”Chat” 頁面使用搜尋功能查詢歷史訊息。
+Teams 能否針對特定訊息回覆訊息?,目前只有手機版App支援此功能。
+Teams 貼圖 Sticker 可以不要輸入文字只單純貼圖嗎?,Teams 貼圖 Sticker要輸入文字才能使用，此為微軟產品設計與限制。
+Teams IM 是否支援 GIF 動圖?,GIF 圖片使用會連接到公司外部 Library，目前此功能關閉。因此功能與 Productivity 不直接相關，所以不在目前開通的範圍。
+Teams IM 是否支援投票功能?,此功能目前無開放時程，未來 Security team review 通過後才有機會開放。
+Teams 是否能像 Skype 一樣使用 IM 回覆呼叫群聊視窗?,Outlook 與 IM 的整合只能擇一。目前公司內部還是以 skype (Lync) 為主。未來若要切換成 Teams，將是以全台積一次切換，切換後 Outlook 狀態燈也將以 Teams 為主。
