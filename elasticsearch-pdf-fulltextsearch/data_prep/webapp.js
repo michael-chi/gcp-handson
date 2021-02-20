@@ -49,15 +49,15 @@ app.post('/upload', async (req, res) => {
 app.get('/search', async (req, res) => {
     try {
         let term = req.query.term;
+        console.log(`searching term=${term}`);
         let Search = require('./handlers/search');
         let search = new Search(process.env.ES_HOST, process.env.ES_PATH, process.env.ES_PORT, term);
         let result = await search.search(term);
-console.log(`search result=${result}`);
+
         res.status(200).json(result);
     } catch (ex) {
         throw ex;
     }
-    //res.send(req.body);
 }
 );
 http.createServer(app).listen(app.get('port'), function(){
