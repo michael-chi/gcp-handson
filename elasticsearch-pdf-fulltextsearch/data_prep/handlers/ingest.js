@@ -2,7 +2,9 @@ var http = require('http');
 const requestAsync = (options, postData = null) => new Promise((resolve, reject) => {
     const isPost = options && options.method === "POST" && postData !== null;
     if (isPost && (!options.headers || !options.headers["Content-Length"])) {
-        options = Object.assign({}, options, {
+        if(typeof postData == 'object')
+		postData = JSON.stringify(postData);
+	options = Object.assign({}, options, {
             headers: Object.assign({}, options.headers, {
                 "Content-Length": Buffer.byteLength(postData)
             })
@@ -35,7 +37,7 @@ async function createIndex(host, path, port) {
         hostname: host,
         port: port,
         path: path,
-        method: 'GET',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         }
@@ -46,13 +48,13 @@ async function createIndex(host, path, port) {
                 faq: {
                     properties: {
                         answer: {
-                            type: string
+                            type: "string"
                         },
                         question: {
-                            type: string
+                            type: "string"
                         },
                         name: {
-                            type: string
+                            type: "string"
                         }
                     }
                 }
@@ -68,20 +70,23 @@ async function index(host, path, port, data) {
         hostname: host,
         port: port,
         path: path,
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         }
     };
+console.log(`==>options=${JSON.stringify(options)}`);
+console.log(`==>data=${JSON.stringify(data)}`);
+
     // console.log(`statusCode: ${res.statusCode}`)
     try {
         let o = {
             question: data.question,
             answer: data.answer,
-            filename: data.file
+            filename: data.filename
         };
-        console.log(JSON.stringify(o));
-        const res = await requestAsync(options, o);
+        
+        const res = await requestAsync(options, JSON.stringify(o));
         return res.body;
     } catch (e) {
         console.error(e);
@@ -90,7 +95,7 @@ async function index(host, path, port, data) {
 //  content => {question:'', answer:'', name:'', file:''}
 async function process(HOST, PATH, PORT, content) {
     console.log(`path=${PATH}${content.filename}`);
-    let res = await index(HOST, `${PATH}${content.file}`, PORT, content);
+    let res = await index(HOST, `${PATH}${content.filename}`, PORT, content);
     return res;
 }
 
