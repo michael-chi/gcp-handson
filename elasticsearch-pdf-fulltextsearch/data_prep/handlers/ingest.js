@@ -47,6 +47,7 @@ async function index(host, path, port, data) {
             answer:data.answer,
             filename:data.file
         });
+	return res.body;
     } catch (e) {
         console.error(e);
     }
