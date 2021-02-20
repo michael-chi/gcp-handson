@@ -1,4 +1,4 @@
-
+var http = require('http');
 const requestAsync = (options, postData = null) => new Promise((resolve, reject) => {
     const isPost = options && options.method === "POST" && postData !== null;
     if (isPost && (!options.headers || !options.headers["Content-Length"])) {
@@ -56,8 +56,9 @@ async function index(host, path, port, data) {
 }
 //  content => {question:'', answer:'', name:'', file:''}
 async function process(HOST, PATH, PORT, content) {
-    console.log(`path=${PATH}${content.file}`);
-    let res = await index(HOST, `${PATH}${pair.filename}`, PORT, content);
+console.log(content);
+    console.log(`path=${PATH}${content.filename}`);
+    let res = await index(HOST, `${PATH}${content.file}`, PORT, content);
     return res.toString();
     /*
     export id=1
@@ -76,6 +77,6 @@ module.exports = class Indexer {
     //  content => {question:'', answer:'', name:'', file:''}
     async index(content) {
         //`faq/faq/${pair.filename}`
-        return await process(this.HOST, `${this.PATH}${path}`, this.PORT, content);
+        return await process(this.HOST, this.PATH, this.PORT, content);
     }
 }

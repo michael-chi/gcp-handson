@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 */
 app.post('/upload', async (req, res) => {
     if(req.is('application/json')){
-        let data = req.body.content;
+        let data = req.body;
         let fn = req.body.file;
         let csv = require('./handlers/csv.js');
         let handler = new csv();
@@ -38,6 +38,7 @@ app.post('/upload', async (req, res) => {
 
         let Indexer = require('./handlers/ingest');
         let indexer = new Indexer();
+
         await indexer.index(parsedData);
     }
     // else if (req.is('text/csv') || req.is('text/plain')) {
