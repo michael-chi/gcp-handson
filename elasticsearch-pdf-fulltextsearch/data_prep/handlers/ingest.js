@@ -67,14 +67,15 @@ async function process(HOST, PATH, PORT, content) {
 }
 
 module.exports = class Indexer {
-    constructor() {
-
+    constructor(host, path, port) {
+        this.HOST = host;
+        this.PATH = path;`${path}`.endsWith('/') ? `${path}` : `${path}/`;
+        this.PORT= port;
     }
 
     //  content => {question:'', answer:'', name:'', file:''}
     async index(content) {
         //`faq/faq/${pair.filename}`
-        var path = `${process.env.ES_PATH}`.endsWith('/') ? `${process.env.ES_PATH}` : `${process.env.ES_PATH}/`;
-        return await process(process.env.ES_HOST, `${path}`, process.env.ES_PORT, content);
+        return await process(this.HOST, `${this.PATH}${path}`, this.PORT, content);
     }
 }
