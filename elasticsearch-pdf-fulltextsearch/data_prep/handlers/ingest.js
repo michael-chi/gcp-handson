@@ -75,11 +75,13 @@ async function index(host, path, port, data) {
     };
     // console.log(`statusCode: ${res.statusCode}`)
     try {
-        const res = await requestAsync(options, {
+        let o = {
             question: data.question,
             answer: data.answer,
             filename: data.file
-        });
+        };
+        console.log(JSON.stringify(o));
+        const res = await requestAsync(options, o);
         return res.body;
     } catch (e) {
         console.error(e);
@@ -105,6 +107,6 @@ module.exports = class Indexer {
         return await process(this.HOST, this.PATH, this.PORT, content);
     }
     async createIndex(){
-        return await createIndex(this.HOST, this.PATH, this.PORT);
+        return await createIndex(this.HOST, this.PATH.split('/')[0], this.PORT);
     }
 }
