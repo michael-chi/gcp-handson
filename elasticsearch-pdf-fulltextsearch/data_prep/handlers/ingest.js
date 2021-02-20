@@ -96,7 +96,8 @@ console.log(`==>data=${JSON.stringify(data)}`);
 async function process(HOST, PATH, PORT, content) {
     console.log(`path=${PATH}${content.filename}`);
     let res = await index(HOST, `${PATH}${content.filename}`, PORT, content);
-    return res;
+    console.log(`process result=${res.body}`);
+    return res.body;
 }
 
 module.exports = class Indexer {

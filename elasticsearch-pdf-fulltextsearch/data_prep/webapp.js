@@ -46,14 +46,15 @@ app.post('/upload', async (req, res) => {
     }
 });
 
-
-
-app.get('/', (req, res) => {
+app.get('/search', (req, res) => {
     try {
-        console.log(`[INFO]===> / <===`);
-        console.log(`[INFO]${JSON.stringify(req.body)}`);
+        let term = req.query.term;
+        let Search = require('./handlers/search');
+        let search = new Search(process.env.ES_HOST, process.env.ES_PATH, process.env.ES_PORT, term);
+        let result = await search.search(term);
+        res.status(200).json(result);
     } catch (ex) {
-        console.log(`[ERROR]${ex}`);
+        
     }
     res.send(req.body);
 }
