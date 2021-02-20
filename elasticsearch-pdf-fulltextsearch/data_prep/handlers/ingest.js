@@ -11,10 +11,12 @@ const requestAsync = (options, postData = null) => new Promise((resolve, reject)
     const body = [];
     const req = http.request(options, res => {
         res.on('data', chunk => {
+            console.log(`data retrived from elasticsearch:${chunk}`);
             body.push(chunk);
         });
         res.on('end', () => {
             res.body = Buffer.concat(body);
+            console.log(`end`);
             resolve(res);
         });
         
@@ -30,8 +32,6 @@ const requestAsync = (options, postData = null) => new Promise((resolve, reject)
     req.end();
 });
 async function index(host, path, port, data) {
-    console.log('running...');
-
     const options = {
         hostname: host,
         port: port,
@@ -41,7 +41,6 @@ async function index(host, path, port, data) {
             'Content-Type': 'application/json',
         }
     };
-    // var res = await https.request(options);
     // console.log(`statusCode: ${res.statusCode}`)
     try {
         const res = await requestAsync(options, {
@@ -74,7 +73,6 @@ module.exports = class Indexer {
 
     //  content => {question:'', answer:'', name:'', file:''}
     async index(content) {
-console.log(`this.HOST=${this.HOST} | this.PATH=${this.PATH}`);
         //`faq/faq/${pair.filename}`
         return await process(this.HOST, this.PATH, this.PORT, content);
     }
