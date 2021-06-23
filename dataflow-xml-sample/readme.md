@@ -24,11 +24,6 @@ python xml-demo.py \
 --region "$REGION" \
 --output_sink="$PROJECT:$DATASET.$TABLE" \
 --filename="gs://cdn-sample/sample-xml-4.xml" \
---requirements_file=./requirements.txt \
---save_main_session=True \
-#  \
-# --temp_location=gs://cdn-sample/xml-temp \
-# --staging_location=gs://cdn-sample/xml-staging \
-# --output "$PROJECT:$DATASET.$TABLE" \
+--requirements_file=./requirements.txt
 
 ```
