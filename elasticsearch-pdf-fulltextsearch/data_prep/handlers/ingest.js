@@ -1,7 +1,9 @@
-
+var http = require('http');
 const requestAsync = (options, postData = null) => new Promise((resolve, reject) => {
     const isPost = options && options.method === "POST" && postData !== null;
     if (isPost && (!options.headers || !options.headers["Content-Length"])) {
+        if (typeof postData == 'object')
+            postData = JSON.stringify(postData);
         options = Object.assign({}, options, {
             headers: Object.assign({}, options.headers, {
                 "Content-Length": Buffer.byteLength(postData)
@@ -15,9 +17,12 @@ const requestAsync = (options, postData = null) => new Promise((resolve, reject)
         });
         res.on('end', () => {
             res.body = Buffer.concat(body);
+            res.body = res.body.toString();
+            console.log(`[ingest]data retrived from elasticsearch:${res.body}`);
+
             resolve(res);
         });
-        
+
     });
 
     req.on('error', e => {
@@ -29,52 +34,82 @@ const requestAsync = (options, postData = null) => new Promise((resolve, reject)
     }
     req.end();
 });
-async function index(host, path, port, data) {
-    console.log('running...');
-
+async function createIndex(host, path, port) {
     const options = {
         hostname: host,
         port: port,
         path: path,
-        method: 'GET',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         }
     };
-    // var res = await https.request(options);
-    // console.log(`statusCode: ${res.statusCode}`)
     try {
         const res = await requestAsync(options, {
-            question:data.question,
-            answer:data.answer,
-            filename:data.file
+            mappings: {
+                faq: {
+                    properties: {
+                        answer: {
+                            type: "string"
+                        },
+                        question: {
+                            type: "string"
+                        },
+                        name: {
+                            type: "string"
+                        }
+                    }
+                }
+            }
         });
-        return resizeTo;
+        return res.body;
+    } catch (e) {
+        console.error(e);
+    }
+}
+async function index(host, path, port, data) {
+    const options = {
+        hostname: host,
+        port: port,
+        path: path,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    };
+
+    try {
+        let o = {
+            question: data.question,
+            answer: data.answer,
+            filename: data.filename
+        };
+
+        const res = await requestAsync(options, JSON.stringify(o));
+        return res.body;
     } catch (e) {
         console.error(e);
     }
 }
 //  content => {question:'', answer:'', name:'', file:''}
 async function process(HOST, PATH, PORT, content) {
-    console.log(`path=${PATH}${content.file}`);
-    let res = await index(HOST, `${PATH}${pair.filename}`, PORT, content);
-    return res.toString();
-    /*
-    export id=1
-    export json_file=/home/tmp/1.pdf.json
-    curl -X POST 'http://10.140.0.13:9200/faq/faq/${id}' --header 'Context-Type: application/json' -d @'${json_file}'
-    */
+    let res = await index(HOST, `${PATH}${content.filename}`, PORT, content);
+    return res;
 }
 
 module.exports = class Indexer {
-    constructor() {
-
+    constructor(host, path, port) {
+        this.HOST = host;
+        this.PATH = path.endsWith('/') ? path : `${path}/`;
+        this.PORT = port;
     }
 
     //  content => {question:'', answer:'', name:'', file:''}
     async index(content) {
         //`faq/faq/${pair.filename}`
-        var path = `${process.env.ES_PATH}`.endsWith('/') ? `${process.env.ES_PATH}` : `${process.env.ES_PATH}/`;
-        return await process(process.env.ES_HOST, `${path}`, process.env.ES_PORT, content);
+        return await process(this.HOST, this.PATH, this.PORT, content);
+    }
+    async createIndex() {
+        return await createIndex(this.HOST, this.PATH.split('/')[0], this.PORT);
     }
 }

@@ -1,0 +1,16 @@
+{
+  "name": "Xml to BigQuery",
+  "description": "Xml to BigQuery",
+  "parameters": [
+    {
+      "name": "output",
+      "label": "Output destination.",
+      "helpText": "Name of the BigQuery dataset."
+    },
+    {
+      "name": "filename",
+      "label": "Input file name.",
+      "helpText": "Name of the input xml file."
+    }
+  ]
+}

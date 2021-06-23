@@ -1,0 +1,1 @@
+<Root><Orders><Order><CustomerID>GREAL</CustomerID><EmployeeID>6</EmployeeID><OrderDate>1997-05-06T00:00:00</OrderDate>  <RequiredDate>1997-05-20T00:00:00</RequiredDate></Order><Order><CustomerID>GREAL</CustomerID><EmployeeID>8</EmployeeID><OrderDate>1997-07-04T00:00:00</OrderDate>  <RequiredDate>1997-08-01T00:00:00</RequiredDate></Order></Orders></Root>
