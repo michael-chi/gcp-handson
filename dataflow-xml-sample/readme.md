@@ -18,6 +18,8 @@ export PROJECT=kalschi-agones
 export DATASET=xmltobq
 export TABLE=xml_data
 
+gsutil cp ./sample-xml-4.xml gs://cdn-sample/sample-xml-4.xml
+
 python xml-demo.py \
 --runner=DataflowRunner \
 --project=$PROJECT \
@@ -25,5 +27,4 @@ python xml-demo.py \
 --output_sink="$PROJECT:$DATASET.$TABLE" \
 --filename="gs://cdn-sample/sample-xml-4.xml" \
 --requirements_file=./requirements.txt
-
 ```
