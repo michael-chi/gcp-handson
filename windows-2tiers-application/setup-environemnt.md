@@ -100,7 +100,7 @@ gcloud compute instances create $INSTANCE_NAME --project=$PROJECT --zone=$ZONE -
 
 ```bash
 export ZONE=asia-east1-b
-export REGION=asia-east2
+export REGION=asia-east1
 export SUBNET=default
 export INSTANCE_NAME=win-iis-std-001
 export PROJECT=kalschi-windows-ad
@@ -143,16 +143,6 @@ Set-Location -LiteralPath \$pwd
 Import-Module WebAdministration
 New-item IIS:\AppPools\DemoPool | Set-ItemProperty -Name "managedRuntimeVersion" -Value "v2.0" -Force
 New-WebApplication -Name "WCF" -Site "Default Web Site" -PhysicalPath "C:\inetpub\wwwroot\WCF_AJAX" -ApplicationPool "DemoPool"
-
-
-############## Join domain ############## 
-\$User = "Administrator@msft-env.cloud"
-\$DomainName = "msft-env.cloud"
-
-
-\$password = ConvertTo-SecureString "P@ssw0rd1" -AsPlainText -Force
-\$cred = New-Object System.Management.Automation.PSCredential \$User, \$password
-Add-Computer -DomainName \$DomainName -Credential \$cred -restart -force -verbose
 
 EOF
 
