@@ -38,7 +38,7 @@ def run(argv=None):
     #     '--save_main_session',
     #     required=True,
     #     help=(
-    #         'Specify text file orders.txt or BigQuery table project:dataset.table '))  
+    #         'Specify text file orders.txt or BigQuery table project:dataset.table '))
     known_args, pipeline_args = parser.parse_known_args(argv)    
     # options = PipelineOptions(beam_args, save_main_session=True, streaming=True)
     # known_args = PipelineOptions(known_args, save_main_session=True, streaming=True)
