@@ -66,6 +66,11 @@ I will conver `Rehost` approach in this lab, `Refactor` is out of this lab's sco
 
     * [Create a simple 2 tiers ASP.Net application on GCE Instances](./0-setup-environemnt.md)
 
+    I leverage a sample [WCF application](https://www.codeproject.com/Articles/29085/ASP-NET-3-5-Sample-Application-of-LINQ-WFC-JSON-an) created by [ToddHileHoffer](https://www.codeproject.com/script/Membership/View.aspx?mid=1744262) on [Code Project](https://www.codeproject.com/) as the ASP.Net workload to migrate.
+
+    To use this sample application, download and store it in working folder.
+
+    Credits to [ToddHileHoffer](https://www.codeproject.com/script/Membership/View.aspx?mid=1744262).
 
 2. Migrate to Windows on GKE
 
