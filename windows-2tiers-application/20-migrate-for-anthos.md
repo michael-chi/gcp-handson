@@ -4,7 +4,7 @@ This document references [Qwiklab](https://www.qwiklabs.com/focuses/15534?catalo
 https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud
 
 
-## Setup Processing Cluster and Windiws Nodes
+## Setup Processing Cluster and Windiws Nodes and Migrate with Migrate for Anthos
 
 ```shell
 export ZONE=asia-east1-b
@@ -13,7 +13,7 @@ export SUBNET=default
 export PROJECT=kalschi-windows-ad
 export GCS=kalschi-windows-env
 export GKE_PROCESS=win-migration-processing
-export SOURCE_VM_NAME=win-iis-domain-003
+export SOURCE_VM_NAME=win-iis-std-001
 
 # Create processing cluster and node pool
 gcloud config set project $PROJECT
@@ -136,3 +136,26 @@ migctl migration get-artifacts my-migration
 # Unzip artifacts and build the docker image on a Windows machine
 
 ```
+## Build container image
+
+Create a Windows Machine as build machine, RDP into it and open powershell
+
+
+```powershell
+$PROJECT="kalschi-windows-ad"
+
+gsutil cp gs://{PATH}/v2k-system-my-migration/7103f348-29ca-4943-a93c-b47bc29c0245/artifacts.zip .
+
+Expand-Archive .\artifacts.zip C:\M4A
+cd C:\M4A
+
+docker build -t gcr.io/$PROJECT/m4a-win:v1.0.0 .
+gcloud auth configure-docker
+docker push gcr.io/$PROJECT/m4a-win:v1.0.0
+
+```
+
+## Deploy to GKE
+
+Once completted building, create a [deployment.yam](./assets/migrate-for-anthos/deployment.yaml) and expose as a service on GKE cluster.
+
