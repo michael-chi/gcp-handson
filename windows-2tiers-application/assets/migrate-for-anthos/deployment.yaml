@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m4a-deploymentt
+spec:
+  selector:
+    matchLabels:
+      app: m4a-app
+  template:
+    metadata:
+      labels:
+        app: m4a-app
+    spec:
+      containers:
+      - name: m4a-app
+        image: gcr.io/kalschi-windows-ad/m4a-win:v1.0.0
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "500m"
+          limits:
+            memory: "2048Mi"
+            cpu: "800m"
+        ports:
+        - containerPort: 80

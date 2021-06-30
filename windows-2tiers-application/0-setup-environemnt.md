@@ -1,5 +1,7 @@
 ### Setup Environment
 
+Open a Cloud shell
+
 ```shell
 export PROJECT=kalschi-windows-ad
 
@@ -16,7 +18,6 @@ gcloud services enable servicenetworking.googleapis.com \
 * Set a strong password to `administrator`
 
 * DCPromo
-
 
 
 ####    Setup VPC Network and Private DNS Zone
@@ -100,23 +101,57 @@ gcloud compute instances create $INSTANCE_NAME --project=$PROJECT --zone=$ZONE -
 
 ```bash
 export ZONE=asia-east1-b
-export REGION=asia-east2
+export REGION=asia-east1
 export SUBNET=default
 export INSTANCE_NAME=win-iis-std-001
 export PROJECT=kalschi-windows-ad
 export IP_ADDRESS=10.140.0.210
 
-gcloud compute instances create $INSTANCE_NAME --project=$PROJECT --zone=$ZONE --machine-type=e2-standard-4 --subnet=$SUBNET --private-network-ip=$IP_ADDRESS --network-tier=PREMIUM \
---metadata=windows-startup-script-ps1='$Env:DatabasePath = "c:\windows\NTDS" 
-$Env:DomainName = "msft-env.cloud" 
-$Env:DomaninNetBIOSName = "MSFT-ENV"
-$Env:PASSWORD = "P@ssw0rd1"
 
-Set-LocalUser -Name "Administrator" -Password  (ConvertTo-SecureString -AsPlainText -String $Env:PASSWORD -Force)
-Get-LocalUser -Name "Administrator" | Enable-LocalUser
+export GCS=kalschi-windows-env
+
+cat << EOF > ./setup-iis-std.ps1
+############ Enable/Install Windows Features ############## 
 
 Install-WindowsFeature -name Web-Server -IncludeManagementTools
-Install-WindowsFeature NET-Framework-Features' \
+Install-WindowsFeature NET-Framework-Features
+
+Get-WindowsOptionalFeature -Online | Where-Object {\$_.State -like "Disabled" -and \$_.FeatureName -like "*WCF*"} | % {Enable-WindowsOptionalFeature -Online -FeatureName \$_.FeatureName -All} 
+
+############ Configure ASP.Net ############## 
+
+C:\Windows\system32\inetsrv\appcmd.exe  unlock config -section:system.webServer/handlers 
+C:\Windows\system32\inetsrv\appcmd.exe  unlock config -section:system.webServer/modules  
+C:\Windows\Microsoft.NET\Framework64\v2.0.50727\aspnet_regiis.exe -i
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\aspnet_regiis.exe -i
+
+############ Download Source Codes ############## 
+
+\$GCS="kalschi-windows-env"
+\$REGION="asia-east1"
+\$PROJECT="kalschi-windows-ad"
+gsutil cp gs://$GCS/WCF_AJAX.zip \$pwd
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+Add-Type -AssemblyName System.IO.Compression
+
+Set-Location -LiteralPath \$pwd
+[System.IO.Compression.ZipFile]::ExtractToDirectory("\$pwd\WCF_AJAX.zip" ,"C:\inetpub\wwwroot") 
+
+
+############ Create Web Application ############## 
+
+Import-Module WebAdministration
+New-item IIS:\AppPools\DemoPool | Set-ItemProperty -Name "managedRuntimeVersion" -Value "v2.0" -Force
+New-WebApplication -Name "WCF" -Site "Default Web Site" -PhysicalPath "C:\inetpub\wwwroot\WCF_AJAX" -ApplicationPool "DemoPool"
+
+EOF
+
+gsutil mb -l $REGION -p $PROJECT gs://$GCS
+gsutil cp ./setup-iis-std.ps1 gs://$GCS
+
+gcloud compute instances create $INSTANCE_NAME --project=$PROJECT --zone=$ZONE --machine-type=e2-standard-4 --subnet=$SUBNET --private-network-ip=$IP_ADDRESS --network-tier=PREMIUM \
+ --metadata=windows-startup-script-url=gs://$GCS/setup-iis-std.ps1 \
 --maintenance-policy=MIGRATE --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
 --image=windows-server-2012-r2-dc-v20210608 --image-project=windows-cloud --boot-disk-size=500GB --no-boot-disk-auto-delete \
 --boot-disk-type=pd-balanced --boot-disk-device-name=msft-env-dc-001 --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring \
@@ -136,18 +171,22 @@ export IP_ADDRESS=10.140.0.203
 
 export GCS=kalschi-windows-env
 
-cat << EOF > ./setup-iis.ps1
-############ Download web files ############## 
+cat << EOF > ./setup-iis-ad.ps1
+############ Enable/Install Windows Features ############## 
 
 Install-WindowsFeature -name Web-Server -IncludeManagementTools
 Install-WindowsFeature NET-Framework-Features
 
 Get-WindowsOptionalFeature -Online | Where-Object {\$_.State -like "Disabled" -and \$_.FeatureName -like "*WCF*"} | % {Enable-WindowsOptionalFeature -Online -FeatureName \$_.FeatureName -All} 
 
+############ Configure ASP.Net ############## 
+
 C:\Windows\system32\inetsrv\appcmd.exe  unlock config -section:system.webServer/handlers 
 C:\Windows\system32\inetsrv\appcmd.exe  unlock config -section:system.webServer/modules  
 C:\Windows\Microsoft.NET\Framework64\v2.0.50727\aspnet_regiis.exe -i
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\aspnet_regiis.exe -i
+
+############ Download Source Codes ############## 
 
 \$GCS="kalschi-windows-env"
 \$REGION="asia-east1"
@@ -161,13 +200,11 @@ Set-Location -LiteralPath \$pwd
 [System.IO.Compression.ZipFile]::ExtractToDirectory("\$pwd\WCF_AJAX.zip" ,"C:\inetpub\wwwroot") 
 
 
+############ Create Web Application ############## 
 
-# import module
 Import-Module WebAdministration
 New-item IIS:\AppPools\DemoPool | Set-ItemProperty -Name "managedRuntimeVersion" -Value "v2.0" -Force
 New-WebApplication -Name "WCF" -Site "Default Web Site" -PhysicalPath "C:\inetpub\wwwroot\WCF_AJAX" -ApplicationPool "DemoPool"
-
-
 
 
 ############## Join domain ############## 
@@ -190,7 +227,7 @@ gcloud compute instances create $INSTANCE_NAME --project=$PROJECT --zone=$ZONE -
 --maintenance-policy=MIGRATE --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
 --image=windows-server-2012-r2-dc-v20210608 --image-project=windows-cloud --boot-disk-size=500GB --no-boot-disk-auto-delete \
 --boot-disk-type=pd-balanced --boot-disk-device-name=msft-env-dc-001 --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring \
---reservation-affinity=any --metadata=windows-startup-script-url=gs://$GCS/setup-iis.ps1
+--reservation-affinity=any --metadata=windows-startup-script-url=gs://$GCS/setup-iis-ad.ps1
 ```
 
 #### Setup Sample Website
