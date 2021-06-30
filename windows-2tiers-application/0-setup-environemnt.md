@@ -1,5 +1,7 @@
 ### Setup Environment
 
+Open a Cloud shell
+
 ```shell
 export PROJECT=kalschi-windows-ad
 
@@ -16,7 +18,6 @@ gcloud services enable servicenetworking.googleapis.com \
 * Set a strong password to `administrator`
 
 * DCPromo
-
 
 
 ####    Setup VPC Network and Private DNS Zone
