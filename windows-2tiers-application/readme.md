@@ -1,5 +1,5 @@
 Running Windows worklaods on Kubernetes
-===
+---
 
 
 ## The problem
@@ -70,7 +70,7 @@ I will conver `Rehost` approach in this lab, `Refactor` is out of scope
 
     Credits to [ToddHileHoffer](https://www.codeproject.com/script/Membership/View.aspx?mid=1744262).
 
-    
+
     * [Create a Cloud SQL for SQL Server instance](./1-setup-mssql.md)
 
     * [Create a simple 2 tiers ASP.Net application on GCE Instances](./0-setup-environemnt.md)
@@ -79,6 +79,6 @@ I will conver `Rehost` approach in this lab, `Refactor` is out of scope
 
 2. Migrate to Windows on GKE
 
-    * [Dockerfile](./10-migrate-to-GKE-Dockerfile.md)
+    * [Writting a Dockerfile](./10-migrate-to-GKE-Dockerfile.md)
 
-    * [Migrate for Anthos](./20-migrate-for-anthos.md)
+    * [Using Migrate for Anthos](./20-migrate-for-anthos.md)
