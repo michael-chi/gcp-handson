@@ -50,10 +50,13 @@ gcloud iam service-accounts keys create m4a-install.json \
   --iam-account=m4a-install@$PROJECT.iam.gserviceaccount.com \
   --project=$PROJECT
 
-wget https://anthos-migrate-release.storage.googleapis.com/v1.8.0/linux/amd64/migctl
-sudo cp migctl /usr/local/bin/
-sudo chmod +x /usr/local/bin/migctl
-. <(migctl completion bash)
+# NOTE, If you are using Cloud Shell, you don't have to download mgctl as it is already installed.
+# If you are running on your onw dev machine, then you'll need to download mgctl by uncomment and run below commands
+#
+# wget https://anthos-migrate-release.storage.googleapis.com/v1.8.0/linux/amd64/migctl
+# sudo cp migctl /usr/local/bin/
+# sudo chmod +x /usr/local/bin/migctl
+# . <(migctl completion bash)
 
 migctl setup install --json-key=m4a-install.json
 
@@ -205,7 +208,9 @@ docker run -p 8080:80 -t gcr.io/$PROJECT/m4a-win:v1.0.0
 
 Once completted building, create a [deployment.yam](./assets/migrate-for-anthos/deployment.yaml) and expose as a service on GKE cluster.
 
+## Monitoring
 
+Container images created by `Migrate for Anthos`
 
 ## Reference
 ---
