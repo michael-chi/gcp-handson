@@ -1,25 +1,42 @@
+ # Additional information on customizing the deployment manifest, in particular
+# if you are deploying a container when storing SSL certificates, or need to
+# configure gMSA:
+# https://cloud.google.com/migrate/anthos/help/win-deploying-to-target-cluster
+#
+# Make sure to replace the image name placeholder with your actual built image.
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: m4a-deploymentt
+  creationTimestamp: null
+  labels:
+    app: win-iis-domain-003
+    migrate-for-anthos-optimization: "true"
+    migrate-for-anthos-version: v1.8.0
+  name: win-iis-domain-003
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: m4a-app
+      app: win-iis-domain-003
+      migrate-for-anthos-optimization: "true"
+      migrate-for-anthos-version: v1.8.0
+  strategy: {}
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        app: m4a-app
+        app: win-iis-domain-003
+        migrate-for-anthos-optimization: "true"
+        migrate-for-anthos-version: v1.8.0
     spec:
       containers:
-      - name: m4a-app
-        image: gcr.io/kalschi-windows-ad/m4a-win:v1.0.0
-        resources:
-          requests:
-            memory: "1024Mi"
-            cpu: "500m"
-          limits:
-            memory: "2048Mi"
-            cpu: "800m"
+      - image: gcr.io/kalschi-windows-ad/m4a-ad-adpool:002
+        name: win-iis-domain-003-container
         ports:
         - containerPort: 80
+        resources: {}
+      nodeSelector:
+        kubernetes.io/os: windows
+status: {}
+ 
