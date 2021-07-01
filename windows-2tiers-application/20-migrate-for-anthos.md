@@ -1,10 +1,15 @@
 
-This document references [Qwiklab](https://www.qwiklabs.com/focuses/15534?catalog_rank=%7B%22rank%22%3A1%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=11730390)
+## Migrate for Anthos
+---
 
-https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud
+[Migrate for Anthos](https://cloud.google.com/migrate/anthos) is a tool which help you to migrate your local machine to containers easily.
 
+It collects and extracts required configurations and binaries from your machine, generate a Dockerfile for you to build container images.
+
+Note that not every configurations are collected, you may still need to verify before deploying to production, but it gives you an idea and workable path toward migration.
 
 ## Setup Processing Cluster and Windiws Nodes and Migrate with Migrate for Anthos
+---
 
 ```shell
 export ZONE=asia-east1-b
@@ -62,7 +67,12 @@ while true; do
         sleep 10
     fi
 done
+```
 
+## Migrate
+---
+
+```powershell
 # Creating a migration source
 gcloud services enable cloudresourcemanager.googleapis.com --project=$PROJECT
 gcloud iam service-accounts create m4a-ce-src \
@@ -137,6 +147,7 @@ migctl migration get-artifacts my-migration
 
 ```
 ## Build container image
+---
 
 Create a Windows Machine as build machine, RDP into it and open powershell
 
@@ -147,6 +158,32 @@ $PROJECT="kalschi-windows-ad"
 gsutil cp gs://{PATH}/v2k-system-my-migration/7103f348-29ca-4943-a93c-b47bc29c0245/artifacts.zip .
 
 Expand-Archive .\artifacts.zip C:\M4A
+
+
+```
+
+#### Note
+
+This particular sample application requires WCF to be enabled, we need to manually update generated Dockerfile. The generated Dockerfile is located in the root folder of arttifiacts, in this case we just extraxt it to `C:\M4A`
+
+```Dockerfile
+# Applying ACLs
+COPY set_acls.bat C:\set_acls.bat
+RUN cmd /c C:\set_acls.bat
+# M4A Entrypoint wrapper
+
+####### Add below ####### 
+WORKDIR  "c:\Windows\Microsoft.NET\Framework\v3.0\Windows Communication Foundation"
+RUN .\ServiceModelReg.exe -i
+########################
+
+
+SHELL ["cmd", "/S", "/C" ]
+ENTRYPOINT powershell -Command C:\m4a\entrypoint.ps1 
+
+```
+
+```powershell
 cd C:\M4A
 
 docker build -t gcr.io/$PROJECT/m4a-win:v1.0.0 .
@@ -154,8 +191,25 @@ gcloud auth configure-docker
 docker push gcr.io/$PROJECT/m4a-win:v1.0.0
 
 ```
+## Running locally
+---
+
+Once successfully built image, run below commands to test if it works as expected locally. Open a browser and navigate  to http://localhost:8080/wcf for testing.
+
+```powershell
+docker run -p 8080:80 -t gcr.io/$PROJECT/m4a-win:v1.0.0
+```
 
 ## Deploy to GKE
+---
 
 Once completted building, create a [deployment.yam](./assets/migrate-for-anthos/deployment.yaml) and expose as a service on GKE cluster.
 
+
+
+## Reference
+---
+
+* This document references [Qwiklab](https://www.qwiklabs.com/focuses/15534?catalog_rank=%7B%22rank%22%3A1%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=11730390)
+
+* [Manage and Download Service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud)

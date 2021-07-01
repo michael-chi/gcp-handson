@@ -1,5 +1,9 @@
 Migrate to GKE via Dockerfile
-===
+---
+
+Migrating from a virtual machine to container via writing a Dockerfile, requires deep understanding on how the target application was built and deployed, as you need to code those installation and configuration steps in the Dockerfile.
+
+In this lab, since we've already built our sample application from scratch, I simply reuse those powershell script in the Dockerfile to make it easier.
 
 ## Create Docker file
 
@@ -31,7 +35,7 @@ Set-Location -LiteralPath $pwd
 
 
 ### Setup script
-
+---
 Microsoft recommends running ASP.Net workloads on Server Core based images, which are not the most ASP.Net workload cases. Some Windows features may not be installed in base image, you should verify required features are installed and enabled.
 
 I worte a [setup.ps1](./assets/containerize/setup.ps1) to install and enable required features for this purpose. You may want to verify your script in a Server core environment to make sure it properly configure runtime environment before running a Dockerfile
@@ -61,5 +65,5 @@ New-item IIS:\AppPools\DemoPool | Set-ItemProperty -Name 'managedRuntimeVersion'
 
 
 ## Tips
-
+---
 * Sometimes you may find unable to install certain Windows feature in Dockerfile, in that case explore Microsoft official [ASP.Net docker hub](https://hub.docker.com/_/microsoft-dotnet-framework-aspnet) for suitable base images.  
