@@ -55,22 +55,27 @@ Considering different approach for Windows workloads on GKE
     You migrate your Windows workloads to Windows containers on GKE using `Migrate for Anthos`
 
 
-I will conver `Rehost` approach in this lab, `Refactor` is out of this lab's scope.
+I will conver `Rehost` approach in this lab, `Refactor` is out of scope
 
 ## Next Step
 ---
 
 1. Setup a sample in a VM Environemnt
 
-    * [Create a Cloud SQL for SQL Server instance](./1-setup-mssql.md)
-
-    * [Create a simple 2 tiers ASP.Net application on GCE Instances](./0-setup-environemnt.md)
 
     I leverage a sample [WCF application](https://www.codeproject.com/Articles/29085/ASP-NET-3-5-Sample-Application-of-LINQ-WFC-JSON-an) created by [ToddHileHoffer](https://www.codeproject.com/script/Membership/View.aspx?mid=1744262) on [Code Project](https://www.codeproject.com/) as the ASP.Net workload to migrate.
 
     To use this sample application, download and store it in working folder.
 
+
     Credits to [ToddHileHoffer](https://www.codeproject.com/script/Membership/View.aspx?mid=1744262).
+
+    
+    * [Create a Cloud SQL for SQL Server instance](./1-setup-mssql.md)
+
+    * [Create a simple 2 tiers ASP.Net application on GCE Instances](./0-setup-environemnt.md)
+
+
 
 2. Migrate to Windows on GKE
 
