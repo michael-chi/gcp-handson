@@ -19,23 +19,27 @@ Traditional ASP.Net workloads are not designed and architected for cloud native 
 
 Note that these considerations are general practices, your application can still requires more changes in order to run properly on GKE.
 
-1. Windows Container requirements
+* Windows Container requirements
 
     Windows container has its system requirements, details [here](https://docs.microsoft.com/en-US/troubleshoot/windows-server/containers/support-for-windows-containers-docker-on-premises-scenarios). Make sure your applications run on supported OS version, IIS versions...etc
 
-2. Session States and Local files
+* Logs
+
+    Console outputs from containers running on GKE automatically ingested to Cloud Logging, which provides a central tracing and logging solution. If the target application leverage other traditional technologies, such as writing logs to files, consider change to console outputs.
+
+* Session States and Local files
 
     ASP.Net stores sessions in-processor out-of-process (such as SQL database), your application should use out-of-process state server in order to be maintain user experience while having auto-scaling/auto-healing.
 
     Traditional ASP.Net application may store session specific temp files, log files or other session specific assets in local file system, in a container world, container up and down when required, those local files should be stored separately, your codes should also be midified accordingly
 
-4. Configuration files
+* Configuration files
 
     Configuration settings such as database connection strings are stored in `web.config` defaults to root folder, consider to move it to a separated location and access from there
 
     Like any other migrations, you may also want to check your configuration settings, such as database connection strings, updated accordingly for new environment.
 
-5. 3rd party dependencies
+* 3rd party dependencies
 
     If your application leverages 3rd party dependencies, make sure they run on a Windows container environment
 
@@ -82,3 +86,7 @@ I will conver `Rehost` approach in this lab, `Refactor` is out of scope
     * [Writting a Dockerfile](./10-migrate-to-GKE-Dockerfile.md)
 
     * [Using Migrate for Anthos](./20-migrate-for-anthos.md)
+
+3. Bonus
+
+    * [Migrating a Linux Application](./30-migrate-for-anthos-linux.md)

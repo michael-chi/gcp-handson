@@ -1,0 +1,76 @@
+# Stateless application specification
+# The Deployment creates a single replicated Pod, indicated by the 'replicas' field
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: linux-source
+    migrate-for-anthos-optimization: "true"
+    migrate-for-anthos-version: v1.8.0
+  name: linux-source
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: linux-source
+      migrate-for-anthos-optimization: "true"
+      migrate-for-anthos-version: v1.8.0
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: linux-source
+        migrate-for-anthos-optimization: "true"
+        migrate-for-anthos-version: v1.8.0
+    spec:
+      containers:
+      - image: gcr.io/kalschi-windows-ad/linux-source:7-3-2021--9-58-27
+        name: linux-source
+        readinessProbe:
+          exec:
+            command:
+            - /opt/apache-tomcat-9.0.50/bin/startup.sh
+            - /code/ready.sh
+        resources: {}
+        ports:
+        - containerPort: 8080
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /sys/fs/cgroup
+          name: cgroups
+      volumes:
+      - hostPath:
+          path: /sys/fs/cgroup
+          type: Directory
+        name: cgroups
+status: {}
+
+---
+# Headless Service specification -
+# No load-balancing, and a single cluster internal IP, only reachable from within the cluster
+# The Kubernetes endpoints controller will modify the DNS configuration to return records (addresses) that point to the Pods, which are labeled with "app": "linux-source"
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    migrate-for-anthos-optimization: "true"
+    migrate-for-anthos-version: v1.8.0
+  name: linux-source
+spec:
+  clusterIP: 10.56.9.95
+  selector:
+    app: linux-source
+  type: LoadBalancer  
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+status:
+  loadBalancer: {}
+
+---

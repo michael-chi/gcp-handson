@@ -106,11 +106,14 @@ while true; do
 done
 
 # Create Migration
-migctl migration create my-migration --source my-ce-src --vm-id $SOURCE_VM_NAME --intent Image --os-type=Windows
+
+export MIGRATION=my-migration
+
+migctl migration create $MIGRATION --source my-ce-src --vm-id $SOURCE_VM_NAME --intent Image --os-type=Windows
 
 
 while true; do
-    migctl migration status my-migration | grep 'Completed' &> /dev/null
+    migctl migration status $MIGRATION | grep 'Completed' &> /dev/null
     if [ $? == 0 ]; then
         echo 'migration created successfully'
         break
@@ -121,16 +124,16 @@ while true; do
 done
 
 # Generate migration details in a yaml file
-migctl migration get my-migration
+migctl migration get $MIGRATION
 
 # Execute the Migration
-migctl migration generate-artifacts my-migration
+migctl migration generate-artifacts $MIGRATION
 
 while true; do
-    migctl migration status my-migration | grep 'Completed' &> /dev/null
+    migctl migration status $MIGRATION | grep 'Completed' &> /dev/null
     if [ $? == 0 ]; then
         echo 'migration completed successfully'
-        migctl migration status my-migration
+        migctl migration status $MIGRATION
         break
     else   
         echo 'processing...'
@@ -144,7 +147,7 @@ done
 
 # The donwloaded artifact contains generated Dockerfile and binaries on the source machine that is required for containerize
 
-migctl migration get-artifacts my-migration
+migctl migration get-artifacts $MIGRATION
 
 # Unzip artifacts and build the docker image on a Windows machine
 
@@ -158,7 +161,7 @@ Create a Windows Machine as build machine, RDP into it and open powershell
 ```powershell
 $PROJECT="kalschi-windows-ad"
 
-gsutil cp gs://{PATH}/v2k-system-my-migration/7103f348-29ca-4943-a93c-b47bc29c0245/artifacts.zip .
+gsutil cp gs://{PATH}/v2k-system-$MIGRATION/7103f348-29ca-4943-a93c-b47bc29c0245/artifacts.zip .
 
 Expand-Archive .\artifacts.zip C:\M4A
 
@@ -210,7 +213,7 @@ Once completted building, create a [deployment.yam](./assets/migrate-for-anthos/
 
 ## Monitoring
 
-Container images created by `Migrate for Anthos`
+Windows Container images created by `Migrate for Anthos` leverages  Microsoft ASP.Net base image which outputs Event Logs and IIS log to console, thus automatically ingested to Cloud Logging. You can check logs in Cloud Logging console.
 
 ## Reference
 ---
