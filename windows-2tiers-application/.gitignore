@@ -3,3 +3,5 @@ migctl
 m4a-ce-src.json
 my-migration.yaml
 artifacts.zip
+**/generated/*
+tmp

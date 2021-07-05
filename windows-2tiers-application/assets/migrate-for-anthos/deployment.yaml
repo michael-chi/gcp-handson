@@ -39,4 +39,4 @@ spec:
       nodeSelector:
         kubernetes.io/os: windows
 status: {}
- 
+# kubectl expose deploy win-iis-domain-003 --type=LoadBalancer --name=aspnet-service
